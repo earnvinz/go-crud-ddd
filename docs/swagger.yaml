@@ -1,0 +1,269 @@
+basePath: /api/v1
+definitions:
+  common.PaginatedResponse-customer_CustomerTransformIndexOutput:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/customer.CustomerTransformIndexOutput'
+        type: array
+      page:
+        type: integer
+      perPage:
+        type: integer
+      totalItems:
+        type: integer
+      totalPages:
+        type: integer
+    type: object
+  common.ResponseError:
+    properties:
+      error:
+        example: error message
+        type: string
+    type: object
+  customer.CustomerCreateBody:
+    properties:
+      email:
+        example: somchai@example.com
+        type: string
+      nameEn:
+        example: Somchai
+        type: string
+      nameTh:
+        example: สมชาย
+        type: string
+    required:
+    - email
+    - nameEn
+    - nameTh
+    type: object
+  customer.CustomerShowResponse:
+    properties:
+      createdAt:
+        type: string
+      createdBy:
+        type: string
+      email:
+        type: string
+      id:
+        type: integer
+      nameEn:
+        type: string
+      nameTh:
+        type: string
+    type: object
+  customer.CustomerTransformIndexOutput:
+    properties:
+      createdAt:
+        type: string
+      createdBy:
+        type: string
+      email:
+        type: string
+      id:
+        type: integer
+      nameEn:
+        type: string
+      nameTh:
+        type: string
+      updatedAt:
+        type: string
+      updatedBy:
+        type: string
+    type: object
+  customer.CustomerUpdateBody:
+    properties:
+      email:
+        example: somchai@example.com
+        type: string
+      nameEn:
+        example: Somchai
+        type: string
+      nameTh:
+        example: สมชาย
+        type: string
+    required:
+    - email
+    - nameEn
+    - nameTh
+    type: object
+info:
+  contact: {}
+  title: Backend-Go-API
+  version: "1.0"
+paths:
+  /customers/:
+    get:
+      description: Retrieve a list of all customers with pagination and search keyword
+      parameters:
+      - default: 1
+        description: Page number
+        in: query
+        minimum: 1
+        name: page
+        type: integer
+      - default: 10
+        description: Items per page
+        in: query
+        maximum: 100
+        minimum: 1
+        name: perPage
+        type: integer
+      - description: Search keyword
+        in: query
+        name: keyword
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/common.PaginatedResponse-customer_CustomerTransformIndexOutput'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/common.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/common.ResponseError'
+      summary: Get all customers
+      tags:
+      - Customers
+    post:
+      consumes:
+      - application/json
+      description: Create a new customer with the input payload
+      parameters:
+      - description: Customer Info
+        in: body
+        name: customer
+        required: true
+        schema:
+          $ref: '#/definitions/customer.CustomerCreateBody'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/common.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/common.ResponseError'
+      summary: Create a new customer
+      tags:
+      - Customers
+  /customers/{id}:
+    delete:
+      description: Delete a customer by their ID
+      parameters:
+      - description: Customer ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "204":
+          description: No Content
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/common.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/common.ResponseError'
+      summary: Delete a customer
+      tags:
+      - Customers
+    get:
+      description: Retrieve a single customer by their ID
+      parameters:
+      - description: Customer ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/customer.CustomerShowResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/common.ResponseError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/common.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/common.ResponseError'
+      summary: Get a customer by ID
+      tags:
+      - Customers
+    put:
+      consumes:
+      - application/json
+      description: Update an existing customer by ID with the input payload
+      parameters:
+      - description: Customer ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Customer Info to update
+        in: body
+        name: customer
+        required: true
+        schema:
+          $ref: '#/definitions/customer.CustomerUpdateBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Updated customer ID
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/common.ResponseError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/common.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/common.ResponseError'
+      summary: Update a customer
+      tags:
+      - Customers
+  /health-check:
+    get:
+      description: Returns OK
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: Health Check
+      tags:
+      - Health
+swagger: "2.0"
