@@ -55,7 +55,7 @@ Create a new migration file with a sequential number and a descriptive name usin
 ---
 
 ## documentation
-https://stackoverflow.com/questions/62736851/go-gin-read-request-body-many-times
-https://github.com/golang-standards/project-layout
+1. https://stackoverflow.com/questions/62736851/go-gin-read-request-body-many-times
+2. https://github.com/golang-standards/project-layout
 
 ---
