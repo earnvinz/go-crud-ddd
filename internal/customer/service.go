@@ -11,6 +11,7 @@ type Service interface {
 	DeleteById(id uint) error
 	TransformCustomerIndex(customer *Customer) CustomerTransformIndexOutput
 	FindById(id uint) (*Customer, error)
+	FindByEmail(email string, excludeId *uint) (*Customer, error)
 }
 
 type service struct {
@@ -52,13 +53,16 @@ func (s *service) FindAllAndCount(filter CustomerIndexQuery) (CustomerServiceFin
 func (s *service) UpdateById(id uint, input *CustomerServiceUpdateInput) (uint, error) {
 	now := time.Now()
 	customer := &Customer{
-		NameTh: input.NameTh,
-		NameEn: input.NameEn,
-		Email:  input.Email,
-
+		Id:        id,
+		NameTh:    input.NameTh,
+		NameEn:    input.NameEn,
+		Email:     input.Email,
 		UpdatedBy: input.UpdatedBy,
 		UpdatedAt: now,
 	}
+
+	s.repo.UpdateById(customer)
+
 	return customer.Id, nil
 }
 
@@ -81,4 +85,8 @@ func (s *service) TransformCustomerIndex(customer *Customer) CustomerTransformIn
 
 func (s *service) FindById(id uint) (*Customer, error) {
 	return s.repo.FindById(id)
+}
+
+func (s *service) FindByEmail(email string, excludeId *uint) (*Customer, error) {
+	return s.repo.FindByEmail(email, excludeId)
 }

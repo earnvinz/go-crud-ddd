@@ -3,9 +3,10 @@ package main
 import (
 	"log"
 	"os"
-	database "test-go/db"
+	"test-go/common"
 	customer "test-go/internal/customer"
 	healthcheck "test-go/internal/health-check"
+	database "test-go/pkg/db"
 
 	_ "test-go/docs"
 
@@ -40,7 +41,8 @@ func main() {
 }
 
 func setupRouter(db *gorm.DB) *gin.Engine {
-	r := gin.Default()
+	r := gin.New()
+	r.Use(gin.Logger(), common.JSONRecovery()) // ใช้ custom recovery
 
 	apiV1 := r.Group("/api/v1")
 	{

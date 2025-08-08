@@ -74,7 +74,8 @@ func (r *repository) FindById(id uint) (*Customer, error) {
 }
 
 func (r *repository) UpdateById(customer *Customer) error {
-	return r.db.Save(customer).Error
+
+	return r.db.Model(&Customer{}).Where("id = ?", customer.Id).Updates(customer).Error
 }
 
 func (r *repository) DeleteById(id uint) error {

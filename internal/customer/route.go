@@ -8,6 +8,6 @@ import (
 func RegisterRoutes(rg *gin.RouterGroup, db *gorm.DB) {
 	repo := NewRepository(db)
 	service := NewService(repo)
-	handler := NewHandler(service)
+	handler := NewHandler(repo, service)
 	handler.RegisterRoutes(rg)
 }
