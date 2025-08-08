@@ -14,6 +14,8 @@ import (
 	_ "github.com/lib/pq"
 )
 
+var migrationsDir = "../migrations"
+
 func checkAndCreateDB(dbUser, dbPass, dbHost, dbPort, dbName string) error {
 	adminDSN := fmt.Sprintf("postgres://%s:%s@%s:%s/postgres?sslmode=disable", dbUser, dbPass, dbHost, dbPort)
 	adminDB, err := sql.Open("postgres", adminDSN)
@@ -66,7 +68,6 @@ func runMigration(dbUser, dbPass, dbHost, dbPort, dbName string) error {
 	}
 	defer appDB.Close()
 
-	migrationsDir := "../db/migrations"
 	files, err := ioutil.ReadDir(migrationsDir)
 	if err != nil {
 		return fmt.Errorf("failed to read migrations directory: %w", err)
@@ -102,7 +103,6 @@ func rollbackMigration(dbUser, dbPass, dbHost, dbPort, dbName string) error {
 	}
 	defer appDB.Close()
 
-	migrationsDir := "../db/migrations"
 	files, err := ioutil.ReadDir(migrationsDir)
 	if err != nil {
 		return fmt.Errorf("failed to read migrations directory: %w", err)

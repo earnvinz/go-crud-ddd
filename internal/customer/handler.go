@@ -1,6 +1,7 @@
 package customer
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 	"test-go/common"
@@ -13,8 +14,11 @@ type Handler struct {
 	Service    Service
 }
 
-func NewHandler(s Service) *Handler {
-	return &Handler{Service: s}
+func NewHandler(repo Repository, service Service) *Handler {
+	return &Handler{
+		Repository: repo,
+		Service:    service,
+	}
 }
 
 // @Tags Customers
@@ -146,31 +150,38 @@ func (h *Handler) Show(c *gin.Context) {
 // @Failure 500 {object} common.ResponseError
 // @Router /customers/{id} [put]
 func (h *Handler) Update(c *gin.Context) {
+
 	var body CustomerUpdateBody
+
 	if err := c.ShouldBindJSON(&body); err != nil {
+		fmt.Println("Bind JSON error:", err)
 		c.JSON(http.StatusBadRequest, common.ResponseError{Error: err.Error()})
 		return
 	}
 
 	idParam := c.Param("id")
+	fmt.Println("Param id:", idParam)
+
 	id, err := strconv.ParseUint(idParam, 10, 32)
 	if err != nil {
+		fmt.Println("Parse ID error:", err)
 		c.JSON(http.StatusBadRequest, common.ResponseError{Error: "invalid customer ID"})
 		return
 	}
 
 	existingCustomer, err := h.Service.FindById(uint(id))
 	if err != nil {
+		fmt.Println("FindById error:", err)
 		c.JSON(http.StatusInternalServerError, common.ResponseError{Error: err.Error()})
 		return
 	}
 	if existingCustomer == nil {
+		fmt.Println("Customer not found")
 		c.JSON(http.StatusNotFound, common.ResponseError{Error: "customer not found"})
 		return
 	}
 
-	user := "email@mock.com" // Decode token at middleware
-
+	user := "email@mock.com"
 	input := &CustomerServiceUpdateInput{
 		CustomerCreateBody: CustomerCreateBody{
 			NameTh: body.NameTh,
@@ -181,6 +192,12 @@ func (h *Handler) Update(c *gin.Context) {
 	}
 
 	customerId, err := h.Service.UpdateById(uint(id), input)
+	if err != nil {
+		fmt.Println("UpdateById error:", err)
+		c.JSON(http.StatusInternalServerError, common.ResponseError{Error: err.Error()})
+		return
+	}
+	fmt.Println("Update successful, customerId:", customerId)
 
 	c.JSON(http.StatusOK, gin.H{
 		"data": gin.H{
@@ -224,9 +241,9 @@ func (h *Handler) Delete(c *gin.Context) {
 
 func (h *Handler) RegisterRoutes(rg *gin.RouterGroup) {
 	customers := rg.Group("/customers")
-	customers.POST("/", IsEmailExisted(h.Repository), h.Create)
+	customers.POST("/", IsEmailExisted(h.Service), h.Create)
 	customers.GET("/", h.Index)
 	customers.GET("/:id", h.Show)
-	customers.PUT("/:id", IsEmailExisted(h.Repository), h.Update)
+	customers.PUT("/:id", IsEmailExisted(h.Service), h.Update)
 	customers.DELETE("/:id", h.Delete)
 }
