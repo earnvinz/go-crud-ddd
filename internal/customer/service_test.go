@@ -82,7 +82,7 @@ func TestService_Create(t *testing.T) {
 	assert.Equal(t, uint(123), id)
 }
 
-func TestService_FindAllAndCount(t *testing.T) {
+func CustomerService_FindAllAndCount(t *testing.T) {
 	mockRepo := &mockRepository{
 		mockFindAllAndCount: func(keyword string, page, perPage int) (CustomerServiceFindAllAndCount, error) {
 			return CustomerServiceFindAllAndCount{
@@ -113,7 +113,7 @@ func TestService_FindAllAndCount(t *testing.T) {
 	assert.Equal(t, "test@example.com", result.Data[0].Email)
 }
 
-func TestService_UpdateById(t *testing.T) {
+func CustomerService_UpdateById(t *testing.T) {
 	updated := false
 	mockRepo := &mockRepository{
 		mockUpdateById: func(c *Customer) error {
@@ -141,7 +141,7 @@ func TestService_UpdateById(t *testing.T) {
 	assert.True(t, updated)
 }
 
-func TestService_DeleteById(t *testing.T) {
+func CustomerService_DeleteById(t *testing.T) {
 	deleted := false
 	mockRepo := &mockRepository{
 		mockDeleteById: func(id uint) error {
@@ -158,7 +158,7 @@ func TestService_DeleteById(t *testing.T) {
 	assert.True(t, deleted)
 }
 
-func TestService_FindById(t *testing.T) {
+func CustomerService_FindById(t *testing.T) {
 	mockRepo := &mockRepository{
 		mockFindById: func(id uint) (*Customer, error) {
 			return &Customer{Id: id, Email: "findbyid@example.com"}, nil
@@ -173,7 +173,7 @@ func TestService_FindById(t *testing.T) {
 	assert.Equal(t, "findbyid@example.com", cust.Email)
 }
 
-func TestService_FindByEmail(t *testing.T) {
+func CustomerService_FindByEmail(t *testing.T) {
 	mockRepo := &mockRepository{
 		mockFindByEmail: func(email string, excludeId *uint) (*Customer, error) {
 			if email == "exists@example.com" {
