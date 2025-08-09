@@ -35,8 +35,16 @@ Create a new migration file with a sequential number and a descriptive name usin
 
 ## How to start the server
 
+### run server via command line
+
 1. Navigate to the project root folder containing `main.go`.
 2. Run the command: `go run main.go`
+
+### run server via docker compose up
+
+Reminder: change .env `DB_HOST` to database service name followed by docker database service name ex: `postgres`
+
+1. docker compose up
 
 ---
 
