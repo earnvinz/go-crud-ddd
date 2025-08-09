@@ -60,10 +60,10 @@ Reminder: change .env `DB_HOST` to database service name followed by docker data
 1. Navigate to the project root folder containing `main.go`.
 2. command `go test./...`
 
-```
 ---
 
 ## documentation
 https://stackoverflow.com/questions/62736851/go-gin-read-request-body-many-times
 https://github.com/golang-standards/project-layout
-```
+
+---
